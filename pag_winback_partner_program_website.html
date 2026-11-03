@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAG & WinBack Partner Program | Turn Visits Into Predictable Growth</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans for English & Cairo for Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Cairo"', 'sans-serif'],
+                        arabic: ['"Cairo"', '"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        pag: {
+                            blue: '#0284c7',
+                            darkBlue: '#0f172a',
+                            emerald: '#10b981',
+                            accent: '#38bdf8',
+                        },
+                        winback: {
+                            gold: '#f59e0b',
+                            cardBlue: '#0c4a6e',
+                            green: '#059669',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 3s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        },
+                        glow: {
+                            '0%': { opacity: '0.4', filter: 'blur(40px)' },
+                            '100%': { opacity: '0.8', filter: 'blur(60px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- QRCode JS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-perspective {
+            perspective: 1200px;
+        }
+
+        .card-inner {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Editor visual feedback */
+        .editor-active [data-editable] {
+            outline: 2px dashed #f59e0b !important;
+            outline-offset: 3px;
+            cursor: text;
+            background-color: rgba(245, 158, 11, 0.12) !important;
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.4);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans transition-colors duration-300 relative overflow-x-hidden antialiased selection:bg-sky-500 selection:text-white pb-20">
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-sky-600/20 rounded-full blur-[140px] pointer-events-none animate-glow"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-600/20 rounded-full blur-[140px] pointer-events-none animate-glow" style="animation-delay: -3s;"></div>
+
+    <!-- Navigation Header Bar -->
+    <header class="sticky top-4 z-40 max-w-6xl mx-auto px-4">
+        <div class="glass-panel rounded-full px-5 py-3 shadow-2xl flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-sky-500/30 text-white font-black text-lg">
+                    PAG
+                </div>
+                <div>
+                    <span class="font-black text-lg tracking-wider text-white">WINBACK</span>
+                    <span class="text-[10px] font-bold text-sky-400 block tracking-widest uppercase -mt-1" id="t-tagline">From Vision To Impact</span>
+                </div>
+            </div>
+
+            <!-- Header Controls -->
+            <div class="flex items-center space-x-2.5 rtl:space-x-reverse">
+                <!-- Authorised Editor Toggle -->
+                <button onclick="toggleEditorMode()" id="editorBtn" class="px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span id="editorBtnText">Edit Mode</span>
+                </button>
+
+                <!-- Language Switcher (EN / AR) -->
+                <button onclick="toggleLanguage()" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 text-xs font-extrabold transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="langLabel">العربية</span>
+                </button>
+
+                <!-- Light/Dark Mode Switcher -->
+                <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-800 text-slate-200 hover:scale-105 active:scale-95 transition-all">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+
+                <!-- Quick Apply CTA -->
+                <a href="#partner-form" class="hidden sm:flex px-4 py-2 rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-600 hover:to-emerald-600 text-white font-bold text-xs shadow-lg shadow-sky-500/25 transition-all items-center gap-1.5">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span id="t-applyBtn">Join Partner Program</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Page Content Container -->
+    <main class="max-w-6xl mx-auto px-4 mt-8 space-y-16">
+
+        <!-- SECTION 1: HERO & PHYSICAL WINBACK CARD REPLICA -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
+            <!-- Hero Text Content -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-extrabold uppercase tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="t-heroBadge" data-editable="heroBadge">PAG PARTNER PROGRAM | شبكة شركاء PAG</span>
+                </div>
+
+                <h1 id="t-heroTitle" data-editable="heroTitle" class="text-3xl sm:text-5xl font-black text-white leading-tight tracking-tight">
+                    Turn Single Visits Into <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">Predictable Growth</span>
+                </h1>
+
+                <p id="t-heroSubtitle" data-editable="heroSubtitle" class="text-sm sm:text-base text-slate-300 leading-relaxed font-medium max-w-xl">
+                    PAG is the main company driving business growth, while WinBack is its physical QR smart card program that connects non-competing local businesses to exchange customers and boost repeat sales.
+                </p>
+
+                <!-- Core Highlights Metrics Badges (From Deck PDF) -->
+                <div class="grid grid-cols-3 gap-3 pt-2">
+                    <div class="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 text-center">
+                        <div class="text-2xl sm:text-3xl font-black text-sky-400" id="t-metric1Val" data-editable="metric1Val">3x</div>
+                        <div class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase mt-1" id="t-metric1Lbl" data-editable="metric1Lbl">Customer Reach</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 text-center">
+                        <div class="text-2xl sm:text-3xl font-black text-emerald-400" id="t-metric2Val" data-editable="metric2Val">100%</div>
+                        <div class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase mt-1" id="t-metric2Lbl" data-editable="metric2Lbl">Trackable Scans</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 text-center">
+                        <div class="text-2xl sm:text-3xl font-black text-amber-400" id="t-metric3Val" data-editable="metric3Val">Zero</div>
+                        <div class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase mt-1" id="t-metric3Lbl" data-editable="metric3Lbl">Ad Spend Waste</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 pt-2">
+                    <a href="#packages" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-600 hover:to-emerald-600 text-white font-extrabold text-sm shadow-xl shadow-sky-500/25 transition-all transform hover:-translate-y-0.5">
+                        <span id="t-explorePricing">Explore Partner Packages</span>
+                    </a>
+                    <button onclick="flipCard()" class="px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span id="t-flipCardBtn">Flip Card Replica</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE 3D PHYSICAL WINBACK CARD REPLICA (Exact PDF Layout) -->
+            <div class="lg:col-span-5 flex justify-center">
+                <div class="w-full max-w-md card-perspective">
+                    <div id="winbackCard" class="card-inner relative w-full h-[260px] sm:h-[280px] rounded-3xl shadow-2xl cursor-pointer" onclick="flipCard()">
+                        
+                        <!-- FRONT SIDE OF PHYSICAL CARD -->
+                        <div class="card-front absolute inset-0 w-full h-full rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-sky-950 to-emerald-950 border border-sky-400/30 p-5 flex flex-col justify-between shadow-2xl">
+                            <!-- Background watermark patterns -->
+                            <div class="absolute -right-10 -top-10 w-44 h-44 bg-sky-500/10 rounded-full blur-2xl"></div>
+
+                            <!-- Card Top Bar -->
+                            <div class="flex items-center justify-between relative z-10">
+                                <div class="text-[10px] font-extrabold uppercase tracking-widest text-sky-300 flex items-center gap-1.5">
+                                    <span>This GIFT presented by:</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5 rtl:space-x-reverse">
+                                    <div class="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center text-xs font-black text-sky-400">PAG</div>
+                                    <span class="text-xs font-black text-amber-400 tracking-wider">WINBACK</span>
+                                </div>
+                            </div>
+
+                            <!-- Multi-Merchant Partner Logos Grid (Exact PDF Icons) -->
+                            <div class="grid grid-cols-4 gap-2 my-auto relative z-10">
+                                <div class="bg-slate-950/80 border border-slate-700/60 rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-md">
+                                    <i class="fa-solid fa-bag-shopping text-emerald-400 text-sm mb-1"></i>
+                                    <span class="text-[9px] font-extrabold text-white leading-tight">PICK'N GO</span>
+                                </div>
+                                <div class="bg-slate-950/80 border border-slate-700/60 rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-md">
+                                    <i class="fa-solid fa-tooth text-sky-400 text-sm mb-1"></i>
+                                    <span class="text-[9px] font-extrabold text-slate-200 leading-tight">ARDENT</span>
+                                </div>
+                                <div class="bg-slate-950/80 border border-slate-700/60 rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-md">
+                                    <i class="fa-solid fa-utensils text-amber-400 text-sm mb-1"></i>
+                                    <span class="text-[9px] font-extrabold text-slate-200 leading-tight">MARKO'S</span>
+                                </div>
+                                <div class="bg-slate-950/80 border border-slate-700/60 rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-md">
+                                    <i class="fa-solid fa-burger text-rose-400 text-sm mb-1"></i>
+                                    <span class="text-[9px] font-extrabold text-slate-200 leading-tight">TWINS</span>
+                                </div>
+                            </div>
+
+                            <!-- Card Bottom Row: Serial No + QR Code Box -->
+                            <div class="flex items-end justify-between relative z-10 pt-2 border-t border-white/10">
+                                <div class="space-y-1">
+                                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Serial No.</div>
+                                    <div id="t-cardSerial" data-editable="cardSerial" class="text-xs font-mono font-extrabold text-sky-300 tracking-wider">SN-WR-PB-000030-0005</div>
+                                </div>
+
+                                <!-- QR SCAN ME BOX -->
+                                <div class="bg-white p-2 rounded-xl text-center shadow-lg text-slate-900 flex flex-col items-center">
+                                    <div id="cardMiniQr" class="w-12 h-12 flex items-center justify-center"></div>
+                                    <span class="text-[8px] font-black uppercase text-sky-700 mt-1 tracking-wider">SCAN ME</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BACK SIDE OF PHYSICAL CARD -->
+                        <div class="card-back absolute inset-0 w-full h-full rounded-3xl overflow-hidden bg-slate-950 border border-emerald-500/30 p-5 flex flex-col justify-between shadow-2xl">
+                            <div>
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+                                    <h4 class="text-xs font-extrabold text-amber-400 uppercase tracking-widest" id="t-cardTermsHeader" data-editable="cardTermsHeader">Terms & Conditions</h4>
+                                    <span class="text-[10px] text-slate-400 font-mono">PAG Rules</span>
+                                </div>
+
+                                <ul class="space-y-2 text-[11px] text-slate-300">
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
+                                        <span id="t-rule1" data-editable="rule1">Valid for 3 days from the date of issue.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
+                                        <span id="t-rule2" data-editable="rule2">Valid for one-time use only.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
+                                        <span id="t-rule3" data-editable="rule3">This ticket cannot be exchanged for cash.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
+                                        <span id="t-rule4" data-editable="rule4">Physical card presentation required upon order.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="pt-3 border-t border-slate-800 flex justify-between items-center text-[10px] text-slate-500">
+                                <span>PAG WinBack Network</span>
+                                <span class="text-sky-400 font-bold">Click to Flip Front</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SHARED ECOSYSTEM FEATURES (From Page 2 of PDF) -->
+        <section class="space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="text-xs font-black uppercase text-emerald-400 tracking-widest" id="t-ecoTag" data-editable="ecoTag">Shared Ecosystem | المنظومة المشتركة</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-white mt-1" id="t-ecoTitle" data-editable="ecoTitle">One Card. A Powerful Local Network.</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-2" id="t-ecoDesc" data-editable="ecoDesc">Traditional flyers are easily forgotten. WinBack gives customers a valuable tangible card connecting complementary local venues.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass-panel p-6 rounded-3xl space-y-3 hover:border-sky-500/40 transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white" id="t-feat1Title" data-editable="feat1Title">Multi-Merchant Exposure</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-feat1Desc" data-editable="feat1Desc">Promote your brand on physical cards distributed by non-competing partner stores in your local area.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-panel p-6 rounded-3xl space-y-3 hover:border-emerald-500/40 transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white" id="t-feat2Title" data-editable="feat2Title">High Perceived Value</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-feat2Desc" data-editable="feat2Desc">Felt as an exclusive gift certificate or VIP card rather than a generic promotional flyer.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-panel p-6 rounded-3xl space-y-3 hover:border-amber-500/40 transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white" id="t-feat3Title" data-editable="feat3Title">QR & Serial Verification</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-feat3Desc" data-editable="feat3Desc">Every card features a unique QR code and serial number to prevent fraud and track redemptions accurately.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CUSTOMER EXPERIENCE FLOW (4 STEPS - Page 3 of PDF) -->
+        <section class="space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="text-xs font-black uppercase text-sky-400 tracking-widest" id="t-flowTag" data-editable="flowTag">Customer Experience | تجربة العميل</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-white mt-1" id="t-flowTitle" data-editable="flowTitle">Customer POV: WinBack Flow</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Step 1 -->
+                <div class="glass-panel p-5 rounded-3xl relative overflow-hidden space-y-3 border-t-4 border-t-sky-500">
+                    <span class="text-3xl font-black text-sky-500/20 absolute top-3 right-4">01</span>
+                    <div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-sm font-bold">
+                        STEP 1
+                    </div>
+                    <h4 class="text-sm font-bold text-white" id="t-step1Title" data-editable="step1Title">Receive Card at Partner A</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-step1Desc" data-editable="step1Desc">Customer receives a physical WinBack card after completing a visit or purchase at partner A (e.g., Coffee Shop).</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-panel p-5 rounded-3xl relative overflow-hidden space-y-3 border-t-4 border-t-emerald-500">
+                    <span class="text-3xl font-black text-emerald-500/20 absolute top-3 right-4">02</span>
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm font-bold">
+                        STEP 2
+                    </div>
+                    <h4 class="text-sm font-bold text-white" id="t-step2Title" data-editable="step2Title">Scan QR & Discover Perks</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-step2Desc" data-editable="step2Desc">Customer scans the unique QR code on the card to check valid partner offers and eligibility rules.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-panel p-5 rounded-3xl relative overflow-hidden space-y-3 border-t-4 border-t-amber-500">
+                    <span class="text-3xl font-black text-amber-500/20 absolute top-3 right-4">03</span>
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-sm font-bold">
+                        STEP 3
+                    </div>
+                    <h4 class="text-sm font-bold text-white" id="t-step3Title" data-editable="step3Title">Redeem at Partner B</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-step3Desc" data-editable="step3Desc">Customer presents the physical card at partner B (e.g., Restaurant) before ordering to unlock their benefit.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="glass-panel p-5 rounded-3xl relative overflow-hidden space-y-3 border-t-4 border-t-purple-500">
+                    <span class="text-3xl font-black text-purple-500/20 absolute top-3 right-4">04</span>
+                    <div class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-sm font-bold">
+                        STEP 4
+                    </div>
+                    <h4 class="text-sm font-bold text-white" id="t-step4Title" data-editable="step4Title">Cross-Partner Ecosystem</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="t-step4Desc" data-editable="step4Desc">The same card connects customers to complementary local experiences, building long-term repeat habits.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PARTNER PACKAGES & PRICING (Page 4 of PDF) -->
+        <section id="packages" class="space-y-8 pt-4">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="text-xs font-black uppercase text-amber-400 tracking-widest" id="t-priceTag" data-editable="priceTag">Partner Economics & Pricing | الأسعار والباقات</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-white mt-1" id="t-priceTitle" data-editable="priceTitle">Choose Your Growth Package</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- STARTER TIER (800 EGP) -->
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 relative border-slate-700/80 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-bold" id="t-tier1Name" data-editable="tier1Name">STARTER TIER</span>
+                                <h3 class="text-2xl font-black text-white mt-2">50 Physical Cards</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl font-black text-white" id="t-tier1Price" data-editable="tier1Price">800</span>
+                                <span class="text-xs font-bold text-slate-400">EGP</span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-400" id="t-tier1Desc" data-editable="tier1Desc">Ideal for single local branch testing & initial pilot validation.</p>
+
+                        <div class="border-t border-slate-800 pt-4 space-y-3 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span id="t-t1f1" data-editable="t1f1">16 EGP per card cost</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span id="t-t1f2" data-editable="t1f2">Custom branded partner logo slot</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span id="t-t1f3" data-editable="t1f3">Ideal for local branch pilot testing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="selectPackage('Starter Tier (800 EGP)')" class="w-full py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all">
+                        <span id="t-selectTier1">Select Starter Tier</span>
+                    </button>
+                </div>
+
+                <!-- GROWTH TIER (1,400 EGP - BEST VALUE) -->
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 relative border-emerald-500/50 flex flex-col justify-between bg-gradient-to-b from-emerald-950/20 to-slate-900/90 shadow-2xl">
+                    <div class="absolute -top-3.5 right-6 px-4 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md">
+                        BEST VALUE | الأكثر توفيراً
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold" id="t-tier2Name" data-editable="tier2Name">GROWTH TIER</span>
+                                <h3 class="text-2xl font-black text-white mt-2">100 Physical Cards</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl font-black text-emerald-400" id="t-tier2Price" data-editable="tier2Price">1,400</span>
+                                <span class="text-xs font-bold text-slate-400">EGP</span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-400" id="t-tier2Desc" data-editable="tier2Desc">Maximum cross-promotional volume with priority digital placement.</p>
+
+                        <div class="border-t border-slate-800 pt-4 space-y-3 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span id="t-t2f1" data-editable="t2f1">14 EGP per card (Save 200 EGP)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span id="t-t2f2" data-editable="t2f2">High cross-promotional customer volume</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span id="t-t2f3" data-editable="t2f3">Priority placement on network QR portal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="selectPackage('Growth Tier (1,400 EGP)')" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/20 transition-all">
+                        <span id="t-selectTier2">Select Growth Tier</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CONTROLLED PILOT PHASE & PROGRAM GOVERNANCE (Page 5 of PDF) -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- 3-Phase Controlled Pilot -->
+            <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-3xl space-y-6">
+                <div>
+                    <span class="text-xs font-black uppercase text-sky-400 tracking-widest">Controlled Pilot Phase | المرحلة التجريبية</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-white mt-1" id="t-pilotTitle" data-editable="pilotTitle">Structured 3-Step Rollout</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+                        <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 font-extrabold flex items-center justify-center shrink-0">1</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white" id="t-p1Title" data-editable="p1Title">Select Local Anchor Partners</h4>
+                            <p class="text-xs text-slate-400 mt-0.5" id="t-p1Desc" data-editable="p1Desc">Recruit a tight cluster of non-competing merchants in your district.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 font-extrabold flex items-center justify-center shrink-0">2</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white" id="t-p2Title" data-editable="p2Title">Deploy Controlled Card Batch</h4>
+                            <p class="text-xs text-slate-400 mt-0.5" id="t-p2Desc" data-editable="p2Desc">Issue limited test card volume with agreed partner offer terms.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 font-extrabold flex items-center justify-center shrink-0">3</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white" id="t-p3Title" data-editable="p3Title">Analyze Redemptions & Expand</h4>
+                            <p class="text-xs text-slate-400 mt-0.5" id="t-p3Desc" data-editable="p3Desc">Evaluate redemption rates and scale the top-performing partnerships.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Governance Campaign Rules -->
+            <div class="lg:col-span-5 glass-panel p-6 sm:p-8 rounded-3xl space-y-6 border-amber-500/30">
+                <div>
+                    <span class="text-xs font-black uppercase text-amber-400 tracking-widest">Campaign Rules | ضوابط الشراكة</span>
+                    <h3 class="text-xl font-black text-white mt-1" id="t-govTitle" data-editable="govTitle">Program Governance</h3>
+                </div>
+
+                <ul class="space-y-3 text-xs text-slate-300">
+                    <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50">
+                        <i class="fa-solid fa-clock text-amber-400 text-sm"></i>
+                        <span id="t-govRule1" data-editable="govRule1">Valid for 3 days from date of issue</span>
+                    </li>
+                    <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50">
+                        <i class="fa-solid fa-user-check text-sky-400 text-sm"></i>
+                        <span id="t-govRule2" data-editable="govRule2">Valid for one-time use per customer</span>
+                    </li>
+                    <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50">
+                        <i class="fa-solid fa-ban text-rose-400 text-sm"></i>
+                        <span id="t-govRule3" data-editable="govRule3">Cannot be exchanged for cash</span>
+                    </li>
+                    <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50">
+                        <i class="fa-solid fa-id-card text-emerald-400 text-sm"></i>
+                        <span id="t-govRule4" data-editable="govRule4">Physical card presentation required</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 6: PARTNER APPLICATION FORM (Page 6 of PDF) -->
+        <section id="partner-form" class="glass-panel p-6 sm:p-10 rounded-3xl space-y-6 max-w-3xl mx-auto border-sky-500/40">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-black uppercase text-emerald-400 tracking-widest" id="t-formTag" data-editable="formTag">Partner Application | انضم كشريك الآن</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white" id="t-formTitle" data-editable="formTitle">Ready to Grow With Local Partners?</h2>
+                <p class="text-xs text-slate-400" id="t-formSubtitle" data-editable="formSubtitle">Start a conversation today to define your exclusive partner benefit and start receiving cross-promotional traffic.</p>
+            </div>
+
+            <form onsubmit="handlePartnerSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1" id="t-lblBizName">Business Name & Industry</label>
+                        <input id="inputBizName" type="text" required placeholder="e.g. Pick'n Go Coffee" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 outline-none text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1" id="t-lblBranches">Number of Branches</label>
+                        <input id="inputBranches" type="number" min="1" required placeholder="1" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 outline-none text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1" id="t-lblOffer">Preferred Benefit Model</label>
+                        <select id="inputOffer" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 outline-none text-slate-200">
+                            <option>Percentage Discount (e.g. 20% Off)</option>
+                            <option>Free Complementary Item (e.g. Free Coffee / Dessert)</option>
+                            <option>Buy 1 Get 1 Free (BOGO)</option>
+                            <option>Custom VIP Service Voucher</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1" id="t-lblPkg">Selected Package</label>
+                        <select id="inputSelectedPkg" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 outline-none text-slate-200">
+                            <option>Starter Tier (800 EGP - 50 Cards)</option>
+                            <option selected>Growth Tier (1,400 EGP - 100 Cards)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1" id="t-lblContact">Contact Phone / WhatsApp</label>
+                    <input id="inputContact" type="tel" required placeholder="+20 100 000 0000" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 outline-none text-white">
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-sky-500 via-teal-500 to-emerald-500 hover:opacity-90 text-white font-black text-sm shadow-xl shadow-sky-500/25 transition-all">
+                    <span id="t-btnSubmit">Submit Partner Application</span>
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-6xl mx-auto px-4 mt-16 pt-8 border-t border-slate-800 text-center text-xs text-slate-500 space-y-2">
+        <p class="font-bold text-slate-400">PAG & WinBack Partner Program • From Vision To Impact</p>
+        <p>© 2026 PAG Business Growth Systems. All rights reserved.</p>
+    </footer>
+
+    <!-- AUTHORISED EDITOR TOOLBAR (FLOATING AT BOTTOM) -->
+    <div id="editorToolbar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-950/90 text-white px-5 py-3 rounded-2xl shadow-2xl border border-amber-500/40 backdrop-blur-md flex items-center gap-3 hidden opacity-0 transition-all duration-300 max-w-lg w-[92%]">
+        <div class="flex items-center gap-2 text-xs font-bold text-amber-400 shrink-0">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Editor Active</span>
+        </div>
+
+        <div class="flex items-center gap-2 ml-auto">
+            <button onclick="saveAllEdits()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold shadow-md transition-colors">
+                <i class="fa-solid fa-floppy-disk mr-1"></i> Save
+            </button>
+            <button onclick="resetToDefaults()" class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-xs font-semibold border border-rose-500/30 transition-colors" title="Reset Defaults">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-2 bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl text-xs font-bold transition-all duration-300 opacity-0 pointer-events-none translate-y-4 border border-sky-500/40">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toastMessage">Notification</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Dictionary for English & Arabic dynamic switching
+        const pagDeckData = {
+            en: {
+                heroBadge: "PAG PARTNER PROGRAM | PAG Network",
+                heroTitle: 'Turn Single Visits Into <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">Predictable Growth</span>',
+                heroSubtitle: "PAG is the main company driving business growth, while WinBack is its physical QR smart card program that connects non-competing local businesses to exchange customers and boost repeat sales.",
+                metric1Val: "3x", metric1Lbl: "Customer Reach",
+                metric2Val: "100%", metric2Lbl: "Trackable Scans",
+                metric3Val: "Zero", metric3Lbl: "Ad Spend Waste",
+                cardSerial: "SN-WR-PB-000030-0005",
+                cardTermsHeader: "Terms & Conditions",
+                rule1: "Valid for 3 days from the date of issue.",
+                rule2: "Valid for one-time use only.",
+                rule3: "This ticket cannot be exchanged for cash.",
+                rule4: "Physical card presentation required upon order.",
+                ecoTag: "Shared Ecosystem | المنظومة المشتركة",
+                ecoTitle: "One Card. A Powerful Local Network.",
+                ecoDesc: "Traditional flyers are easily forgotten. WinBack gives customers a valuable tangible card connecting complementary local venues.",
+                feat1Title: "Multi-Merchant Exposure", feat1Desc: "Promote your brand on physical cards distributed by non-competing partner stores in your local area.",
+                feat2Title: "High Perceived Value", feat2Desc: "Felt as an exclusive gift certificate or VIP card rather than a generic promotional flyer.",
+                feat3Title: "QR & Serial Verification", feat3Desc: "Every card features a unique QR code and serial number to prevent fraud and track redemptions accurately.",
+                flowTag: "Customer Experience | تجربة العميل",
+                flowTitle: "Customer POV: WinBack Flow",
+                step1Title: "Receive Card at Partner A", step1Desc: "Customer receives a physical WinBack card after completing a visit or purchase at partner A (e.g., Coffee Shop).",
+                step2Title: "Scan QR & Discover Perks", step2Desc: "Customer scans the unique QR code on the card to check valid partner offers and eligibility rules.",
+                step3Title: "Redeem at Partner B", step3Desc: "Customer presents the physical card at partner B (e.g., Restaurant) before ordering to unlock their benefit.",
+                step4Title: "Cross-Partner Ecosystem", step4Desc: "The same card connects customers to complementary local experiences, building long-term repeat habits.",
+                priceTag: "Partner Economics & Pricing | الأسعار والباقات",
+                priceTitle: "Choose Your Growth Package",
+                tier1Name: "STARTER TIER", tier1Price: "800", tier1Desc: "Ideal for single local branch testing & initial pilot validation.",
+                t1f1: "16 EGP per card cost", t1f2: "Custom branded partner logo slot", t1f3: "Ideal for local branch pilot testing",
+                tier2Name: "GROWTH TIER", tier2Price: "1,400", tier2Desc: "Maximum cross-promotional volume with priority digital placement.",
+                t2f1: "14 EGP per card (Save 200 EGP)", t2f2: "High cross-promotional customer volume", t2f3: "Priority placement on network QR portal",
+                pilotTitle: "Structured 3-Step Rollout",
+                p1Title: "Select Local Anchor Partners", p1Desc: "Recruit a tight cluster of non-competing merchants in your district.",
+                p2Title: "Deploy Controlled Card Batch", p2Desc: "Issue limited test card volume with agreed partner offer terms.",
+                p3Title: "Analyze Redemptions & Expand", p3Desc: "Evaluate redemption rates and scale the top-performing partnerships.",
+                govTitle: "Program Governance",
+                govRule1: "Valid for 3 days from date of issue",
+                govRule2: "Valid for one-time use per customer",
+                govRule3: "Cannot be exchanged for cash",
+                govRule4: "Physical card presentation required",
+                formTag: "Partner Application | انضم كشريك الآن",
+                formTitle: "Ready to Grow With Local Partners?",
+                formSubtitle: "Start a conversation today to define your exclusive partner benefit and start receiving cross-promotional traffic."
+            },
+            ar: {
+                heroBadge: "برنامج شركاء PAG | شبكة WINBACK",
+                heroTitle: 'حوّل الزيارة الفردية إلى <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">نمو مستمر وإيرادات متكررة</span>',
+                heroSubtitle: "PAG هي الشركة الأم لدعم وتنمية الأعمال، وWinBack هو برنامج البطاقة الملموسة الذكية المطور لربط المتاجر المجاورة وتبادل العملاء لزيادة مبيعات الجميع.",
+                metric1Val: "3x", metric1Lbl: "مضاعفة وصول العملاء",
+                metric2Val: "100%", metric2Lbl: "تتبع دقيق للمسوحات",
+                metric3Val: "صفر", metric3Lbl: "بدون هدر تسويقي",
+                cardSerial: "SN-WR-PB-000030-0005",
+                cardTermsHeader: "الشروط والأحكام",
+                rule1: "صالحة لمدة 3 أيام من تاريخ الإصدار.",
+                rule2: "صالحة للاستخدام مرة واحدة فقط.",
+                rule3: "غير قابلة للاستبدال أو التعويض نقداً.",
+                rule4: "إبراز البطاقة الملموسة شرط أساسي قبل الطلب.",
+                ecoTag: "المنظومة المشتركة | SHARED ECOSYSTEM",
+                ecoTitle: "بطاقة واحدة تشبك أنجح الشركات المحلية",
+                ecoDesc: "الفلاير التقليدي يسهل تجاهله. WinBack تقدم بطاقة ملموسة ذات قيمة تربط العميل بأفضل المتاجر والمراكز المجاورة.",
+                feat1Title: "ظهور متعدّد للشراكات", feat1Desc: "ترويج علامتك التجارية على بطاقات ملموسة يوزعها شركاء غير منافسين في نفس منطقتك.",
+                feat2Title: "قيمة تقديرية عالية", feat2Desc: "يشعر العميل بامتلاك هدية قيمة أو بطاقة VIP بدلاً من إعلان بروشور عادي.",
+                feat3Title: "توثيق رقمي وحماية QR", feat3Desc: "رمز QR ورقم تسلسلي فريد لضمان سهولة التحقق والأمان وتتبع الاستبدال.",
+                flowTag: "تجربة العميل | CUSTOMER EXPERIENCE",
+                flowTitle: "منظور العميل: مسار وتجربة WinBack",
+                step1Title: "استلام البطاقة عند الشريك 1", step1Desc: "يتلقى العميل بطاقة وين باك ملموسة كهدية بعد زيارته الأولى أو شرائه من (مقهى).",
+                step2Title: "مسح الرمز واكتشاف العروض", step2Desc: "يمسح العميل رمز QR للاطلاع على العروض المتاحة وشروط الاستبدال.",
+                step3Title: "استبدال العرض لدى الشريك 2", step3Desc: "يقدم البطاقة للشريك الثاني (مطعم) للحصول على الخصم أو الهدية المحددة.",
+                step4Title: "مواصلة الاستفادة بالشبكة", step4Desc: "نفس البطاقة تفتح له مزايا جديدة في أماكن ترفيهية ومتاجر مجاورة.",
+                priceTag: "منظور الشريك والأسعار | PARTNER ECONOMICS",
+                priceTitle: "اختر الباقة المناسبة لنشاطك",
+                tier1Name: "الباقة الأساسية STARTER", tier1Price: "800", tier1Desc: "مناسبة لتجربة الحملة على فرع واحد واختبار النتائج.",
+                t1f1: "تكلفة البطاقة الواحدة 16 جنيه", t1f2: "إضافة شعار متجرك على الواجهة", t1f3: "مناسبة لتجربة الحملة على فرع واحد",
+                tier2Name: "الباقة المتقدمة GROWTH", tier2Price: "1,400", tier2Desc: "وصول لعدد أكبر من عملاء الشبكة مع أولوية الظهور.",
+                t2f1: "14 جنيه للبطاقة (توفير 200 جنيه)", t2f2: "وصول عالي لعملاء شبكة الشركاء", t2f3: "أولوية الظهور في بوابة المسح الرقمية",
+                pilotTitle: "خطة إطلاق تجريبية منظمة",
+                p1Title: "اختيار الشركاء المستهدفين", p1Desc: "اختيار مجموعة محددة من الأنشطة المتكاملة غير المنافسة بنفس المنطقة.",
+                p2Title: "إطلاق دفعة بطاقات محدودة", p2Desc: "توزيع دفعة بطاقات تجريبية محددة العدد والمدة مع الاتفاق على العرض.",
+                p3Title: "تحليل النتائج والتوسع", p3Desc: "دراسة نسبة الاستبدال وتوسيع نطاق الشراكات الأكثر نجاحاً.",
+                govTitle: "ضوابط وحوكمة البرامج",
+                govRule1: "صالحة لمدة 3 أيام فقط من تاريخ التوزيع",
+                govRule2: "صالحة للاستخدام مرة واحدة فقط لكل عميل",
+                govRule3: "العروض غير قابلة للاستبدال أو التعويض نقداً",
+                govRule4: "إبراز البطاقة الملموسة شرط أساسي للاستبدال",
+                formTag: "انضم كشريك الآن | PARTNER APPLICATION",
+                formTitle: "مستعد لمضاعفة عملاء متجرك بالتكامل؟",
+                formSubtitle: "تواصل معنا اليوم لتحديد نوع العرض وصيغة الشراكة المناسبة لنشاطك التجاري."
+            }
+        };
+
+        let currentLang = 'en';
+        let isEditorMode = false;
+        let qrInstance = null;
+
+        // Render standard translations
+        function renderTexts() {
+            const data = pagDeckData[currentLang];
+            document.querySelectorAll('[data-editable]').forEach(el => {
+                const key = el.getAttribute('data-editable');
+                if (data[key]) {
+                    el.innerHTML = data[key];
+                }
+            });
+        }
+
+        // Toggle Language (EN / AR)
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'English' : 'العربية';
+            renderTexts();
+            showToast(currentLang === 'ar' ? 'تم تحويل اللغة إلى العربية' : 'Switched to English');
+        }
+
+        // Card Flip
+        function flipCard() {
+            document.getElementById('winbackCard').classList.toggle('flipped');
+        }
+
+        // Toggle Authorised Editor Mode
+        function toggleEditorMode() {
+            isEditorMode = !isEditorMode;
+            const body = document.body;
+            const editorBtn = document.getElementById('editorBtn');
+            const editorBtnText = document.getElementById('editorBtnText');
+            const toolbar = document.getElementById('editorToolbar');
+
+            if (isEditorMode) {
+                body.classList.add('editor-active');
+                editorBtn.className = 'px-3.5 py-1.5 rounded-full bg-amber-500 text-slate-950 text-xs font-bold transition-all shadow-md flex items-center gap-1.5';
+                editorBtnText.innerText = 'Editing ON';
+                
+                document.querySelectorAll('[data-editable]').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+
+                toolbar.classList.remove('hidden');
+                setTimeout(() => toolbar.classList.remove('opacity-0'), 10);
+                showToast('Authorised Editor Activated! Click text on screen to edit.');
+            } else {
+                body.classList.remove('editor-active');
+                editorBtn.className = 'px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5';
+                editorBtnText.innerText = 'Edit Mode';
+                
+                document.querySelectorAll('[data-editable]').forEach(el => {
+                    el.removeAttribute('contenteditable');
+                });
+
+                toolbar.classList.add('opacity-0');
+                setTimeout(() => toolbar.classList.add('hidden'), 300);
+                saveAllEdits();
+            }
+        }
+
+        // Save Edits to LocalStorage
+        function saveAllEdits() {
+            const data = { ...pagDeckData[currentLang] };
+            document.querySelectorAll('[data-editable]').forEach(el => {
+                const key = el.getAttribute('data-editable');
+                data[key] = el.innerHTML.trim();
+            });
+            pagDeckData[currentLang] = data;
+            localStorage.setItem(`pag_deck_data_${currentLang}`, JSON.stringify(data));
+            showToast('All changes saved locally!');
+        }
+
+        // Reset Defaults
+        function resetToDefaults() {
+            localStorage.removeItem(`pag_deck_data_${currentLang}`);
+            location.reload();
+        }
+
+        // Package Selection Helper
+        function selectPackage(pkgName) {
+            document.getElementById('inputSelectedPkg').value = pkgName.includes('Starter') ? 'Starter Tier (800 EGP - 50 Cards)' : 'Growth Tier (1,400 EGP - 100 Cards)';
+            document.getElementById('partner-form').scrollIntoView({ behavior: 'smooth' });
+            showToast(`Selected ${pkgName}`);
+        }
+
+        // Partner Form Submission
+        function handlePartnerSubmit(e) {
+            e.preventDefault();
+            const biz = document.getElementById('inputBizName').value;
+            const pkg = document.getElementById('inputSelectedPkg').value;
+            const phone = document.getElementById('inputContact').value;
+
+            showToast('Application Submitted! Redirecting to WhatsApp...');
+            
+            setTimeout(() => {
+                const text = encodeURIComponent(`Hi PAG WinBack Team!\nI want to join the Partner Program.\n\nBusiness: ${biz}\nPackage: ${pkg}\nContact: ${phone}`);
+                window.open(`https://wa.me/?text=${text}`, '_blank');
+            }, 1000);
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-sun text-amber-500 text-sm';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-moon text-sm';
+            }
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            }, 2500);
+        }
+
+        // Initialize Card QR
+        window.onload = function() {
+            // Restore stored edits if available
+            ['en', 'ar'].forEach(lang => {
+                const stored = localStorage.getItem(`pag_deck_data_${lang}`);
+                if (stored) pagDeckData[lang] = JSON.parse(stored);
+            });
+
+            renderTexts();
+
+            // Render Card QR Code
+            const qrContainer = document.getElementById('cardMiniQr');
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+                text: "https://pagwinback.com/verify?sn=SN-WR-PB-000030-0005",
+                width: 48,
+                height: 48,
+                colorDark: "#0284c7",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+    </script>
+</body>
+</html>
